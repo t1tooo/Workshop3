@@ -9,20 +9,26 @@ app.get('/api/*', async (req, res) => {
     console.log(`Fetching: ${willysUrl}`);
 
     const response = await fetch(willysUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0' } // Mimic a real browser
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://www.willys.se/',
+      }
     });
 
-    const text = await response.text(); // Read response as text
-    console.log(`Response received: ${text.substring(0, 500)}`); // Log first 500 chars
+    const contentType = response.headers.get('content-type') || '';
+    console.log(`Content-Type: ${contentType}`);
 
-    // Try parsing JSON
-    try {
-      const data = JSON.parse(text);
-      res.json(data);
-    } catch (jsonError) {
-      console.error("Error parsing JSON. Received:", text.substring(0, 500));
-      res.status(500).json({ error: "Invalid JSON response from Willys" });
+    const text = await response.text();
+    console.log(`Response from Willys (first 500 chars):\n${text.substring(0, 500)}`);
+
+    if (!contentType.includes('application/json')) {
+      console.error("Received non-JSON response. Likely blocked.");
+      return res.status(500).json({ error: "Willys API returned non-JSON data", response: text.substring(0, 500) });
     }
+
+    const data = JSON.parse(text);
+    res.json(data);
 
   } catch (error) {
     console.error("Error fetching from Willys:", error);

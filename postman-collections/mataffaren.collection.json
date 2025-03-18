@@ -1,187 +1,339 @@
 {
-  "info": {
-    "_postman_id": "f9189376-b6f1-46ca-ac12-e6db00ad1bca",
-    "name": "Tests of Mataffären",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "30881265"
-  },
-  "item": [
-    {
-      "name": "Get categories",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// Get the data from the response unpacked from json",
-              "let responseData = pm.response.json();",
-              "",
-              "// Check that the status code is 200 (OK)",
-              "pm.test('The status code of the response should be 200', () => {",
-              "  pm.expect(pm.response).to.have.status(200);",
-              "});",
-              "",
-              "// Check that we have a response time of < 1 second",
-              "pm.test('The response time should be below 1 second', () => {",
-              "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-              "})",
-              "",
-              "// Check that there are at least 10 main categories (children)",
-              "pm.test('There should be at least 10 main categories', () => {",
-              "  pm.expect(responseData.children.length).to.be.at.least(10);",
-              "});",
-              "",
-              "// Check that each main category has the properites title and url",
-              "pm.test('Each main category should have the properties title and url', () => {",
-              "    for(let category of responseData.children){",
-              "        // an empty string is falsy -> convert to false using !!",
-              "        // a string with content is truthy -> convert to true using !!",
-              "        pm.expect(!!category.title).to.be.true;",
-              "        pm.expect(!!category.url).to.be.true;",
-              "        // check that datatype is string for both title and url",
-              "        pm.expect(category.title).to.be.string;",
-              "        pm.expect(category.url).to.be.string;",
-              "    }",
-              "});",
-              "",
-              "// Save the responseData as a pm.variable",
-              "pm.variables.set('categoryData', responseData);",
-              "",
-              "// Set a counter for products within a main category to fecth as a pm.variable",
-              "pm.variables.set('categoryCounter', 0);"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "// Set the domain",
-              "pm.environment.set('domain', 'http://localhost:4000')"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{domain}}/api/leftMenu/categorytree",
-          "host": [
-            "{{domain}}"
-          ],
-          "path": [
-            "api",
-            "leftMenu",
-            "categorytree"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get productlist within category",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "// Get the categories and the categoryCounter from pm.variables",
-              "let categories = pm.variables.get('categoryData');",
-              "let categoryCounter = pm.variables.get('categoryCounter');",
-              "",
-              "// Get the category part of the url and set it as an environment variable",
-              "let urlCategoryPart = categories.children[categoryCounter].url;",
-              "pm.environment.set('urlCategoryPart',urlCategoryPart);",
-              "",
-              "// Add 1 to the categoryCounter environment variable",
-              "pm.variables.set('categoryCounter', categoryCounter + 1);"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// Get the categories and the categoryCounter from pm.variables",
-              "let categories = pm.variables.get('categoryData');",
-              "let categoryCounter = pm.variables.get('categoryCounter');",
-              "",
-              "// Tests",
-              "",
-              "// Check that the status code is 200 (OK)",
-              "pm.test('The status code of the response should be 200', () => {",
-              "  pm.response.to.have.status(200);",
-              "});",
-              "",
-              "// Check that we have a response time of < 1 second",
-              "pm.test('The response time should be below 1 second', () => {",
-              "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-              "});",
-              "",
-              "// Check that we have at least one product in the this main category",
-              "let responseData = pm.response.json();",
-              "pm.test('There should be at least one product in a main category', () => {",
-              "    pm.expect(responseData.results.length).to.be.at.least(1);",
-              "});",
-              "",
-              "",
-              "// Repeat/loop this request until we have requested all main categories",
-              "if(categories.children[categoryCounter]){",
-              "  // Repeat this request (with new variable data for the url)",
-              "  pm.execution.setNextRequest('Get productlist within category');",
-              "}",
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{domain}}/api/c/{{urlCategoryPart}}?size=30&page=0&sort=topRated",
-          "host": [
-            "{{domain}}"
-          ],
-          "path": [
-            "api",
-            "c",
-            "{{urlCategoryPart}}"
-          ],
-          "query": [
-            {
-              "key": "size",
-              "value": "30"
-            },
-            {
-              "key": "page",
-              "value": "0"
-            },
-            {
-              "key": "sort",
-              "value": "topRated"
-            }
-          ]
-        }
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"_postman_id": "13ca57d0-ccb8-4995-8b8e-ca51479ec4f5",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34738095",
+		"_collection_link": "https://matwillys.postman.co/workspace/MatWillys~44633eb0-d52b-4177-8544-f766a1dda592/collection/34738095-13ca57d0-ccb8-4995-8b8e-ca51479ec4f5?action=share&source=collection_link&creator=34738095"
+	},
+	"item": [
+		{
+			"name": "Products in category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/c/kott-chark-och-fagel/palagg?size=30&page=0&sort=price-asc\n",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"c",
+						"kott-chark-och-fagel",
+						"palagg"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "30"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "price-asc\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Products in category Test 03",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test Script\r",
+							"\r",
+							"// Check if the response status is 200 (Success)\r",
+							"pm.test(\"Status code is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Check if the response is in JSON format\r",
+							"pm.test(\"Response is JSON\", function() {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"// Log the response body to inspect its structure (for debugging)\r",
+							"pm.test(\"Log response body\", function() {\r",
+							"    console.log(pm.response.json());\r",
+							"});\r",
+							"\r",
+							"// Check if the response contains the 'results' array\r",
+							"pm.test(\"Response contains 'results' array\", function() {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"results\");\r",
+							"    pm.expect(jsonResponse.results).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"// Check if each item in 'results' array contains required properties\r",
+							"pm.test(\"Each item in 'results' should contain required properties\", function() {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    jsonResponse.results.forEach(function(item) {\r",
+							"        pm.expect(item).to.have.property(\"price\");\r",
+							"        pm.expect(item).to.have.property(\"name\");\r",
+							"        pm.expect(item).to.have.property(\"image\");\r",
+							"        pm.expect(item).to.have.property(\"productLine2\");\r",
+							"        \r",
+							"        // Check if the 'image' property has required sub-properties\r",
+							"        pm.expect(item.image).to.have.property(\"url\");\r",
+							"        pm.expect(item.image).to.have.property(\"imageType\");\r",
+							"        pm.expect(item.image).to.have.property(\"format\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// Check if 'price' is a valid number\r",
+							"pm.test(\"Price should be a valid number\", function() {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    jsonResponse.results.forEach(function(item) {\r",
+							"        pm.expect(item.priceValue).to.be.a(\"number\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// Check if 'name' is a string\r",
+							"pm.test(\"Name should be a string\", function() {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    jsonResponse.results.forEach(function(item) {\r",
+							"        pm.expect(item.name).to.be.a(\"string\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// Check if the 'productLine2' has a valid format (not empty string)\r",
+							"pm.test(\"productLine2 should be a non-empty string\", function() {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    jsonResponse.results.forEach(function(item) {\r",
+							"        pm.expect(item.productLine2).to.be.a(\"string\").that.is.not.empty;\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/c/kott-chark-och-fagel/palagg?size=30&page=0&sort=price-asc\n",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"c",
+						"kott-chark-och-fagel",
+						"palagg"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "30"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "price-asc\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Category tree",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/leftMenu/categorytree",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"leftMenu",
+						"categorytree"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Category tree Test 02",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains 'id' and 'category' properties\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"id\");\r",
+							"    pm.expect(jsonResponse).to.have.property(\"category\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains 'children' array\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"children\").that.is.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each child contains 'id', 'category', 'title', and 'url' properties\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    jsonResponse.children.forEach(child => {\r",
+							"        pm.expect(child).to.have.property(\"id\");\r",
+							"        pm.expect(child).to.have.property(\"category\");\r",
+							"        pm.expect(child).to.have.property(\"title\");\r",
+							"        pm.expect(child).to.have.property(\"url\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid property exists and is true\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"valid\").that.is.true;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/leftMenu/categorytree",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"leftMenu",
+						"categorytree"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product Detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/axfood/rest/p/101290312_ST",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"axfood",
+						"rest",
+						"p",
+						"101290312_ST"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product Detail Test 01",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains ean\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"ean\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains name\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"name\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains price\", function () {\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    pm.expect(jsonResponse).to.have.property(\"price\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/axfood/rest/p/101290312_ST",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"axfood",
+						"rest",
+						"p",
+						"101290312_ST"
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }
