@@ -10,16 +10,19 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "newman run postman-collections/mataffaren.collection.json",
-    "cucumber:test": "cypress run --e2e",
-    "cucumber:open": "cypress open --e2e"
+    "cucumber:test": "cucumber-js --require ./test/step-definitions/**/*.js ./test/features/**/*.feature"
   },
   "dependencies": {
+    "chai-http": "^5.1.1",
     "concurrently": "^8.0.1",
     "express": "^4.18.2",
+    "glob": "^11.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easier": "^3.0.4",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "reflect-metadata": "^0.2.2",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^22.0.1",
@@ -28,6 +31,7 @@
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.3.4",
     "chai": "^5.2.0",
+    "cypress": "^14.2.0",
     "esbuild": "^0.25.1",
     "newman": "^6.2.0",
     "node-fetch": "^3.3.2",
