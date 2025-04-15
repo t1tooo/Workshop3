@@ -22,14 +22,16 @@ jobs:
         run: npm install
 
       - name: Start backend server
-        run: npm start &
+        run: |
+          nohup npm start &
 
       - name: Wait for server to be ready
-        uses: cycjimmy/wait-on-action@v1
-        with:
-          url: http://localhost:5173
-          timeout: 60
-
+        run: |
+          while ! curl -s http://localhost:5173 > /dev/null; do
+            echo "Waiting for server to be ready..."
+            sleep 5
+          done
+          
       - name: Run Newman tests
         run: |
           npx newman run postman-collections/mataffaren.collection.json --reporters cli,json --reporter-json-export newman-report.json
