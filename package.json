@@ -10,7 +10,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "newman run postman-collections/mataffaren.collection.json",
-    "cucumber:test": "cucumber-js --require ./test/step-definitions/**/*.js ./test/features/**/*.feature"
+    "cucumber:test": "cucumber-js --import ./test/step-definitions/**/*.js ./test/features/**/*.feature"
+
   },
   "dependencies": {
     "chai-http": "^5.1.1",
