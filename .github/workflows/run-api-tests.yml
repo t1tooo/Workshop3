@@ -37,4 +37,4 @@ jobs:
           npx newman run postman-collections/mataffaren.collection.json --reporters cli,json --reporter-json-export newman-report.json
 
       - name: Run Cucumber + Chai tests
-        run: npm run test:cucumber
+        run: npm run cucumber:test

@@ -11,7 +11,6 @@
     "preview": "vite preview",
     "test": "newman run postman-collections/mataffaren.collection.json",
     "cucumber:test": "cucumber-js --import ./test/step-definitions/**/*.js ./test/features/**/*.feature"
-
   },
   "dependencies": {
     "chai-http": "^5.1.1",
@@ -32,7 +31,6 @@
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.3.4",
     "chai": "^5.2.0",
-    "cypress": "^14.2.0",
     "esbuild": "^0.25.1",
     "newman": "^6.2.0",
     "node-fetch": "^3.3.2",
